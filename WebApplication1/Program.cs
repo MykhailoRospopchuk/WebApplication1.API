@@ -11,9 +11,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // take connection string from file
-string connection = builder.Configuration.GetConnectionString("PersonApiDbConnectionString");
+string connection = builder.Configuration.GetConnectionString("WebApiDbConnectionString");
 // add context PersonApiDbContext as a services in app
-builder.Services.AddDbContext<PersonApiDbContext>(options => options.UseSqlServer(connection));
+builder.Services.AddDbContext<WebApiDbContext>(options => options.UseSqlServer(connection));
 
 var app = builder.Build();
 
