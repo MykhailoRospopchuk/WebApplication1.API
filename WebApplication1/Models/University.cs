@@ -4,6 +4,12 @@
     {
         public Guid UniversityId { get; set; }
         public string Name { get; set; } = null!;
-        public ICollection<Person> Persons { get; set; }
+
+        public Guid CityId { get; set; }
+        public City City { get; set; } = null!;
+
+        public ICollection<LocalGroup>? LocalGroups { get; set; }
+        public ICollection<Person>? Persons { get; set; }
+
     }
 }
