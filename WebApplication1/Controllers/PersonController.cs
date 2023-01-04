@@ -12,8 +12,8 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class PersonController : ControllerBase
     {
-        private readonly PersonApiDbContext dbContext;
-        public PersonController(PersonApiDbContext dbContext)
+        private readonly WebApiDbContext dbContext;
+        public PersonController(WebApiDbContext dbContext)
         {
             this.dbContext = dbContext;
         }
@@ -27,9 +27,9 @@ namespace WebApplication1.Controllers
 
         // GET api/<PersonController>/5
         [HttpGet("{id}")] 
-        public async Task<ActionResult<Person>> GetPersonById(Guid id)
+        public async Task<ActionResult<Person>> GetPersonById(Guid PersonId)
         {
-            var person = await dbContext.Persons.FindAsync(id);
+            var person = await dbContext.Persons.FindAsync(PersonId);
             if (person == null)
             {
                 return NotFound();
@@ -40,7 +40,7 @@ namespace WebApplication1.Controllers
 
         // POST api/<PersonController>
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<Person>>> Post([FromBody] Person newperson)
+        public async Task<ActionResult<Person>> Post([FromBody] Person newperson)
         {
             if (newperson == null)
             {
@@ -52,7 +52,7 @@ namespace WebApplication1.Controllers
             }
             else
             {
-                newperson.Id = Guid.NewGuid();
+                newperson.PersonId = Guid.NewGuid();
             }
 
             dbContext.Persons.Add(newperson);
@@ -62,9 +62,9 @@ namespace WebApplication1.Controllers
 
         // PUT api/<PersonController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<Person>> Put(Guid id, [FromBody] Person updateperson)
+        public async Task<ActionResult<Person>> Put(Guid PersonId, [FromBody] Person updateperson)
         {
-            var person = await dbContext.Persons.FindAsync(id);
+            var person = await dbContext.Persons.FindAsync(PersonId);
             if (updateperson == null || person == null )
             {
                 return NotFound("User not found");
@@ -77,7 +77,7 @@ namespace WebApplication1.Controllers
                 {
                     var val1 = item.GetValue(person);
                     var val2 = item.GetValue(updateperson);
-                    if (val1 != val2)
+                    if (val1 != val2 && val2 != null)
                     {
                         item.SetValue(person, val2);
                     }
@@ -90,9 +90,9 @@ namespace WebApplication1.Controllers
 
         // DELETE api/<PersonController>/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Person>> Delete(Guid id)
+        public async Task<ActionResult<Person>> Delete(Guid PersonId)
         {
-            var person = await dbContext.Persons.FindAsync(id);
+            var person = await dbContext.Persons.FindAsync(PersonId);
             if (person == null)
             {
                 return NotFound("User not found");
