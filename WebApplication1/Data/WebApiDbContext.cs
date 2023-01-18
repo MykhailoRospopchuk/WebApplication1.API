@@ -30,19 +30,20 @@ namespace WebApplication1.Data
                 new Country { CountryId = Guid.NewGuid(), Name = "Ukraine", RegionId = regionsList[0].RegionId },
                 new Country { CountryId = Guid.NewGuid(), Name = "Germany", RegionId = regionsList[1].RegionId }
             };
+           
             List<City> citiesList = new()
             {
                 new City { CityId = Guid.NewGuid(), Name = "Kyiv", CountryId = countriesList[0].CountryId },
                 new City { CityId = Guid.NewGuid(), Name = "Lviv", CountryId = countriesList[0].CountryId }
             };
             List<University> universitiesList = new()
-            { new University { UniversityId = Guid.NewGuid(), Name = "KPI", CityId = citiesList[0].CityId },
+            {   new University { UniversityId = Guid.NewGuid(), Name = "KPI", CityId = citiesList[0].CityId },
                 new University { UniversityId = Guid.NewGuid(), Name = "LPI", CityId = citiesList[1].CityId }
             };
             List<LocalGroup> localGroupsList = new()
             {
                 new LocalGroup { LocalGroupId = Guid.NewGuid(), Name = "LG Kyiv", UniversityId = universitiesList[0].UniversityId },
-                new LocalGroup { LocalGroupId = Guid.NewGuid(), Name = "LG Lviv", UniversityId = universitiesList[1].UniversityId  }
+                new LocalGroup { LocalGroupId = Guid.NewGuid(), Name = "LG Lviv", UniversityId = universitiesList[1].UniversityId }
             };
             List<Position> positionsList = new()
             {
@@ -75,7 +76,7 @@ namespace WebApplication1.Data
                     CityId = citiesList[0].CityId,
                     UniversityId = universitiesList[0].UniversityId,
                     LocalGroupId = localGroupsList[0].LocalGroupId,
-                    PositionId = positionsList[0].PositionId 
+                    PositionId = positionsList[0].PositionId
                 },
                 new Person { 
                     PersonId = Guid.NewGuid(), 
@@ -96,9 +97,9 @@ namespace WebApplication1.Data
                     PhoneNumber = "+0324785107",
                     RegionId = regionsList[0].RegionId, 
                     CountryId = countriesList[0].CountryId, 
-                    CityId = citiesList[0].CityId, 
-                    UniversityId = universitiesList[0].UniversityId, 
-                    LocalGroupId = localGroupsList[0].LocalGroupId, 
+                    CityId = citiesList[1].CityId, 
+                    UniversityId = universitiesList[1].UniversityId, 
+                    LocalGroupId = localGroupsList[1].LocalGroupId, 
                     PositionId = positionsList[2].PositionId 
                 },
                 new Person { 
@@ -108,7 +109,7 @@ namespace WebApplication1.Data
                     PhoneNumber = "+0321151076", 
                     RegionId = regionsList[0].RegionId, 
                     CountryId = countriesList[0].CountryId, 
-                    CityId = citiesList[1].CityId, 
+                    CityId = citiesList[0].CityId, 
                     UniversityId = universitiesList[0].UniversityId, 
                     LocalGroupId = localGroupsList[0].LocalGroupId, 
                     PositionId = positionsList[2].PositionId 
@@ -138,13 +139,12 @@ namespace WebApplication1.Data
             modelBuilder.Entity<Person>()
                 .HasOne(r => r.Region)
                 .WithMany(p => p.Persons)
-                .HasForeignKey(p => p.RegionId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(p => p.RegionId);
             modelBuilder.Entity<Person>()
                 .HasOne(p => p.Position)
                 .WithMany(p => p.Persons)
                 .HasForeignKey(p => p.PositionId);
-
+            
             modelBuilder.Entity<Region>().HasData(regionsList);
             modelBuilder.Entity<Country>().HasData(countriesList);
             modelBuilder.Entity<City>().HasData(citiesList);

@@ -22,7 +22,12 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Person>>> GetAllPersons()
         {
-            return await dbContext.Persons.ToListAsync();
+            
+            var result = await dbContext.Persons
+                .Include(x => x.LocalGroup)
+                .ToListAsync();
+
+            return result;
         }
 
         // GET api/<PersonController>/5
