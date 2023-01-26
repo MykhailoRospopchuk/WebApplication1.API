@@ -12,14 +12,17 @@ namespace WebApplication1.Data
         public DbSet<Region> Regions { get; set; } = null!;
         public DbSet<Position> Positions { get; set; } = null!;
         public DbSet<Person> Persons { get; set; } = null!;
+
+        
         public WebApiDbContext(DbContextOptions<WebApiDbContext> options) : base(options)
         {
-            Database.EnsureDeleted();
+            //Database.EnsureDeleted();
             // if we don't use migration -> uncomment next row to create DB
             Database.EnsureCreated(); // create database on first using
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            
             List<Region> regionsList = new()
             {
                 new Region { RegionId = Guid.NewGuid(), RegionName = "Baltic" },

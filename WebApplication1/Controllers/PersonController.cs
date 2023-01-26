@@ -12,10 +12,10 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class PersonController : ControllerBase
     {
-        private readonly WebApiDbContext dbContext;
+        private readonly WebApiDbContext _dbContext;
         public PersonController(WebApiDbContext dbContext)
         {
-            this.dbContext = dbContext;
+            _dbContext = dbContext;
         }
                 
         // GET: api/<PersonController>
@@ -23,7 +23,7 @@ namespace WebApplication1.Controllers
         public async Task<ActionResult<IEnumerable<Person>>> GetAllPersons()
         {
             
-            var result = await dbContext.Persons
+            var result = await _dbContext.Persons
                 .Include(x => x.LocalGroup)
                 .ToListAsync();
 
@@ -32,9 +32,9 @@ namespace WebApplication1.Controllers
 
         // GET api/<PersonController>/5
         [HttpGet("{id}")] 
-        public async Task<ActionResult<Person>> GetPersonById(Guid PersonId)
+        public async Task<ActionResult<Person>> GetPersonById(Guid personId)
         {
-            var person = await dbContext.Persons.FindAsync(PersonId);
+            var person = await _dbContext.Persons.FindAsync(personId);
             if (person == null)
             {
                 return NotFound();
@@ -51,25 +51,27 @@ namespace WebApplication1.Controllers
             {
                 return NotFound();
             }
-            else if(dbContext.Persons.Any(x => x.PhoneNumber == newperson.PhoneNumber || x.Email == newperson.Email) )
+            else if(_dbContext.Persons.Any(x => x.PhoneNumber == newperson.PhoneNumber || x.Email == newperson.Email) )
             {
                 return BadRequest("This user is already registered");
             }
-            else
-            {
-                newperson.PersonId = Guid.NewGuid();
-            }
-
-            dbContext.Persons.Add(newperson);
-            await dbContext.SaveChangesAsync();
+            
+            newperson.PersonId = Guid.NewGuid();          
+            _dbContext.Persons.Add(newperson);
+            await _dbContext.SaveChangesAsync();
             return Ok(newperson);
         }
 
         // PUT api/<PersonController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<Person>> Put(Guid PersonId, [FromBody] Person updateperson)
+        public async Task<ActionResult<Person>> Put(Guid personId, [FromBody] Person updateperson)
         {
-            var person = await dbContext.Persons.FindAsync(PersonId);
+            if (personId != updateperson.PersonId)
+            {
+                return BadRequest();
+            }
+            
+            var person = await _dbContext.Persons.FindAsync(personId);
             if (updateperson == null || person == null )
             {
                 return NotFound("User not found");
@@ -88,22 +90,22 @@ namespace WebApplication1.Controllers
                     }
                 }
             }
-            dbContext.Persons.Update(person);
-            await dbContext.SaveChangesAsync();
+            _dbContext.Persons.Update(person);
+            await _dbContext.SaveChangesAsync();
             return Ok(person);
         }
 
         // DELETE api/<PersonController>/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Person>> Delete(Guid PersonId)
+        public async Task<ActionResult<Person>> Delete(Guid personId)
         {
-            var person = await dbContext.Persons.FindAsync(PersonId);
+            var person = await _dbContext.Persons.FindAsync(personId);
             if (person == null)
             {
                 return NotFound("User not found");
             }
-            dbContext.Persons.Remove(person);
-            await dbContext.SaveChangesAsync();
+            _dbContext.Persons.Remove(person);
+            await _dbContext.SaveChangesAsync();
             return Ok(person);
         }
     }
